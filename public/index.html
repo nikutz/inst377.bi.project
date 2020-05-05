@@ -3,6 +3,45 @@
   <head>
     <title>Methods - Post and Put Lab</title>
     <link rel="stylesheet" type="text/css" href="styles.css" />
+
+    <!-- We are going to need this later do pull out the slider inputs: https://api.jqueryui.com/slider/ -->
+    <!--How to do a 2 input slider: https://jqueryui.com/slider/#range -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+    $( function() {
+      $( "#year-slider-range" ).slider({
+        range: true,
+        min: 2000,
+        max: 2020,
+        values: [ 2000, 2020 ],
+        slide: function( event, ui ) {
+          $( "#year" ).val( "[" + ui.values[ 0 ] + " - " + ui.values[ 1 ] + "]");
+        }
+      });
+      $( "#year" ).val( "[" + $( "#year-slider-range" ).slider( "values", 0 ) +
+        " - " + $( "#year-slider-range" ).slider( "values", 1 ) + "]" );
+    } );
+    </script>
+
+<script>
+  $( function() {
+    $( "#slider-range" ).slider({
+      range: true,
+      min: 0,
+      max: 500,
+      values: [ 75, 300 ],
+      slide: function( event, ui ) {
+        $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+      }
+    });
+    $( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
+      " - $" + $( "#slider-range" ).slider( "values", 1 ) );
+  } );
+  </script>
+
   </head>
   <body>
     <div class="wrapper">
@@ -10,8 +49,48 @@
         <div>
           <h1 class="header">POST and PUT lab - with Fetch</h1>
         </div>
-        <div>
+        <!--Radio Buttons:https://www.w3schools.com/tags/att_input_type_radio.asp-->
+        <!--How to do sliders : https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_rangeslider-->
+        <div class="facetMenu"> 
           <form class="targetForm" id="labForm">
+            <p>Please select your buissness:</p>
+            <input type="radio" id="comercial" name="option" value="male">
+            <label for="comercial">Comercial</label><br>
+            <input type="radio" id="residential" name="option" value="female">
+            <label for="residential">Residential</label><br>
+            <input type="radio" id="both" name="option" value="other">
+
+            <!--Drop down: https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select -->
+            <label for="permit">Permit Type:</label>
+
+            <select id="permit">
+              <option value="volvo">Volvo</option>
+              <option value="saab">Saab</option>
+              <option value="opel">Opel</option>
+              <option value="audi">Audi</option>
+            </select>
+
+            <p>
+              <label for="year">Date Range:</label>
+              <input type="text" id="year" readonly style="border:0; color:#f6931f; font-weight:bold;">
+            </p>
+             
+            <div id="year-slider-range"></div>
+
+            <!-- https://css-tricks.com/html-for-zip-codes/ -->
+            <p>
+            <label for="zip">Zip Code:</label>
+            <input id="zip" name="zip" type="text" value="20783" inputmode="numeric" pattern="\d{5}">
+          </p>
+
+            <p>
+               <label for="amount">Price range:</label>
+               <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+            </p>
+ 
+            <div id="slider-range"></div>
+
+            <label for="both">Both</label> 
             <label for="name">Name</label>
             <input type="text" id="name" name="name" />
             <label for="interests">Interests</label>
@@ -21,9 +100,11 @@
             ><br />
             <button id="formBtn">Submit</button>
           </form>
+          </div>
         </div>
       </div>
     </div>
+
     <script>
       function sendForm(e) {
         e.preventDefault(); // this prevents your page reloading on button click
@@ -52,5 +133,6 @@
       const formBtn = document.querySelector("#formBtn");
       formBtn.addEventListener("click", sendForm);
     </script>
+
   </body>
 </html>
