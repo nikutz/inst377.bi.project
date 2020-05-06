@@ -150,20 +150,11 @@
 
         const formToSend = new FormData(target);
 
-        fetch("/api", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(Object.fromEntries(formToSend)),
-        })
-          .then((data) => data.text()) // note: we didn't send JSON, so there's no JSON to get.
-          .then((txtresponse) => {
-            console.log(txtresponse);
-            btn.setAttribute("disabled", true);
-            const br = document.createElement("br");
-            target.append(br);
-            target.append(`${txtresponse}`);
+        fetch("/api")
+          .then((permits) => permits.json()) // note: we didn't send JSON, so there's no JSON to get.
+          .then((permits) => {
+            console.log(permits.data["Building Permit"]);
+            return permits.data["Building Permit"];
           });
       }
 
