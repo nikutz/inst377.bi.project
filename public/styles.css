@@ -23,7 +23,7 @@ body {
   
   .wrapper {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
     }
@@ -122,4 +122,13 @@ h2 {
       border: 1px solid #ccc;
       box-shadow: 1px 1px 1px #999;
       margin-bottom: 10px;
+  }
+
+
+  #mapid {
+    height:480px;
+    width: 400px;
+    position: relative;
+    margin-top: 15px;
+    margin-left: 15px;
   }

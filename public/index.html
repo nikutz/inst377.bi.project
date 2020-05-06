@@ -6,98 +6,141 @@
 
     <!-- We are going to need this later do pull out the slider inputs: https://api.jqueryui.com/slider/ -->
     <!--How to do a 2 input slider: https://jqueryui.com/slider/#range -->
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
+    <link
+      rel="stylesheet"
+      href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+    />
+    <link rel="stylesheet" href="/resources/demos/style.css" />
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-    $( function() {
-      $( "#year-slider-range" ).slider({
-        range: true,
-        min: 2000,
-        max: 2020,
-        values: [ 2000, 2020 ],
-        slide: function( event, ui ) {
-          $( "#year" ).val( "[" + ui.values[ 0 ] + " - " + ui.values[ 1 ] + "]");
-        }
+      $(function () {
+        $("#year-slider-range").slider({
+          range: true,
+          min: 2000,
+          max: 2020,
+          values: [2000, 2020],
+          slide: function (event, ui) {
+            $("#year").val("[" + ui.values[0] + " - " + ui.values[1] + "]");
+          },
+        });
+        $("#year").val(
+          "[" +
+            $("#year-slider-range").slider("values", 0) +
+            " - " +
+            $("#year-slider-range").slider("values", 1) +
+            "]"
+        );
       });
-      $( "#year" ).val( "[" + $( "#year-slider-range" ).slider( "values", 0 ) +
-        " - " + $( "#year-slider-range" ).slider( "values", 1 ) + "]" );
-    } );
     </script>
 
-<script>
-  $( function() {
-    $( "#slider-range" ).slider({
-      range: true,
-      min: 0,
-      max: 500,
-      values: [ 75, 300 ],
-      slide: function( event, ui ) {
-        $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
-      }
-    });
-    $( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
-      " - $" + $( "#slider-range" ).slider( "values", 1 ) );
-  } );
-  </script>
+    <script>
+      $(function () {
+        $("#slider-range").slider({
+          range: true,
+          min: 0,
+          max: 500,
+          values: [75, 300],
+          slide: function (event, ui) {
+            $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+          },
+        });
+        $("#amount").val(
+          "$" +
+            $("#slider-range").slider("values", 0) +
+            " - $" +
+            $("#slider-range").slider("values", 1)
+        );
+      });
+    </script>
+
+    <!-- This is leaflet links/scripts to get it working  -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+      integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+      integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+      crossorigin=""
+    ></script>
   </head>
   <body>
     <div class="header">
       <h1>PG Opportunity Locator</h1>
-      <h2> Locator </h2>      
-      <h2> About </h2> 
-      <h2> Demo </h2> 
-  </div>
+      <h2>Locator</h2>
+      <h2>About</h2>
+      <h2>Demo</h2>
+    </div>
 
-  <div class="wrapper">
-        <!--Radio Buttons:https://www.w3schools.com/tags/att_input_type_radio.asp-->
-        <!--How to do sliders : https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_rangeslider-->     
-        <div class="facetMenu"> 
-          <form class="targetForm" id="labForm">
+    <div class="wrapper">
+      <!--Radio Buttons:https://www.w3schools.com/tags/att_input_type_radio.asp-->
+      <!--How to do sliders : https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_rangeslider-->
+      <div class="facetMenu">
+        <form class="targetForm" id="labForm">
+          <label for="business">Please select your buissness:</label>
 
-            <label for="business">Please select your buissness:</label>
+          <select id="buesiness">
+            <option value="comercial">Comercial</option>
+            <option value="residential">Residential</option>
+            <option value="both">Both</option>
+          </select>
 
-            <select id="buesiness">
-              <option value="comercial">Comercial</option>
-              <option value="residential">Residential</option>
-              <option value="both">Both</option>
-            </select>
+          <!--Drop down: https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select -->
+          <label for="permit">Permit Type:</label>
 
-            <!--Drop down: https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select -->
-            <label for="permit">Permit Type:</label>
+          <select id="permit">
+            <option value="volvo">Volvo</option>
+            <option value="saab">Saab</option>
+            <option value="opel">Opel</option>
+            <option value="audi">Audi</option>
+          </select>
 
-            <select id="permit">
-              <option value="volvo">Volvo</option>
-              <option value="saab">Saab</option>
-              <option value="opel">Opel</option>
-              <option value="audi">Audi</option>
-            </select>
+          <!-- https://css-tricks.com/html-for-zip-codes/ -->
+          <p>
+            <label for="zip">Zip Code:</label>
+            <input
+              id="zip"
+              name="zip"
+              type="text"
+              value="20783"
+              inputmode="numeric"
+              pattern="\d{5}"
+            />
+          </p>
 
-            <!-- https://css-tricks.com/html-for-zip-codes/ -->
-            <p>
-              <label for="zip">Zip Code:</label>
-              <input id="zip" name="zip" type="text" value="20783" inputmode="numeric" pattern="\d{5}">
-            </p>
+          <p>
+            <label for="year">Date Range:</label>
+            <input
+              type="text"
+              id="year"
+              readonly
+              style="border: 0; color: #f6931f; font-weight: bold;"
+            />
+          </p>
 
-            <p>
-              <label for="year">Date Range:</label>
-              <input type="text" id="year" readonly style="border:0; color:#f6931f; font-weight:bold;">
-            </p>
-             
-            <div id="year-slider-range"></div>
+          <div id="year-slider-range"></div>
 
-            <p>
-               <label for="amount">Price range:</label>
-               <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
-            </p>
- 
-            <div id="slider-range"></div>
-            <button id="formBtn">Submit</button>
-          </form>
-          </div>
-        </div>
+          <p>
+            <label for="amount">Price range:</label>
+            <input
+              type="text"
+              id="amount"
+              readonly
+              style="border: 0; color: #f6931f; font-weight: bold;"
+            />
+          </p>
 
+          <div id="slider-range"></div>
+          <button id="formBtn">Submit</button>
+        </form>
+      </div>
+      <div class="GeoMap">
+        <div id="mapid"></div>
+      </div>
+    </div>
 
     <script>
       function sendForm(e) {
@@ -126,7 +169,26 @@
 
       const formBtn = document.querySelector("#formBtn");
       formBtn.addEventListener("click", sendForm);
-    </script>
 
+      /* This is Leaflet part of the script.  For not just trying to insert into the front page */
+
+      const mymap = L.map("mapid").setView([38.992962, -76.943047], 13);
+
+      L.tileLayer(
+        "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibmlrdXR6IiwiYSI6ImNrOG03Y2ZnajBrNXczcm8yZmJvcmMwMXYifQ.f2mmuC6VX3-SR_TlifP6wQ",
+        {
+          maxZoom: 18,
+          attribution:
+            'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+            '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+          id: "mapbox/streets-v11",
+          tileSize: 512,
+          zoomOffset: -1,
+        }
+      ).addTo(mymap);
+
+
+    </script>
   </body>
 </html>
