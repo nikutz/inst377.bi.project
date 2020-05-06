@@ -8,7 +8,7 @@
 * Nikolas Utzschneider
 
 ## Information Problem
-* Where would be the best location to start a new business in Prince George’s County?
+* Where would be the best location to start a new retail business in Prince George’s County?
 
 ## Stakeholders and Target Browsers
 
