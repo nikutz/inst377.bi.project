@@ -84,10 +84,10 @@
       <!--How to do sliders : https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_rangeslider-->
       <div class="facetMenu">
         <form class="targetForm" id="labForm">
-          <label for="business">Please select your buissness:</label>
+          <label for="business">Please select your business:</label>
 
-          <select id="buesiness">
-            <option value="comercial">Comercial</option>
+          <select id="business">
+            <option value="commercial">Commercial</option>
             <option value="residential">Residential</option>
             <option value="both">Both</option>
           </select>
@@ -154,20 +154,24 @@
 
         const formToSend = new FormData(target);
 
-        fetch("/api", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(Object.fromEntries(formToSend)),
-        })
-          .then((data) => data.text()) // note: we didn't send JSON, so there's no JSON to get.
-          .then((txtresponse) => {
-            console.log(txtresponse);
-            btn.setAttribute("disabled", true);
-            const br = document.createElement("br");
-            target.append(br);
-            target.append(`${txtresponse}`);
+        fetch("/api")
+          .then((permits) => permits.json())
+          //Only use building permits
+          .then((permits) => {
+            return permits.data["Building Permit"];
+          })
+          //Filter based on selections
+          .then((permits) => {
+            var filtered = permits.filter(function(m){
+              var business = document.getElementById("business").value;
+              //once we can get commercial/residential, do it here
+              //return m["type"] == document.getElementById("permit").value;
+              return m["zip"] == document.getElementById("zip").value;
+              //figure out how to get year/cost here
+            });
+            console.log(filtered);
+            console.log(document.getElementById("business").value)
+            return filtered;
           });
       }
 
