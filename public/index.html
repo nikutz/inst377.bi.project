@@ -66,6 +66,8 @@
       integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
       crossorigin=""
     ></script>
+
+    <script src="pgCounty.js"></script>
   </head>
   <body>
     <div class="header">
@@ -172,7 +174,7 @@
 
       /* This is Leaflet part of the script.  For not just trying to insert into the front page */
 
-      const mymap = L.map("mapid").setView([38.992962, -76.943047], 13);
+      const mymap = L.map("mapid").setView([38.852610, -76.813890], 9.5);
 
       L.tileLayer(
         "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibmlrdXR6IiwiYSI6ImNrOG03Y2ZnajBrNXczcm8yZmJvcmMwMXYifQ.f2mmuC6VX3-SR_TlifP6wQ",
@@ -187,6 +189,8 @@
           zoomOffset: -1,
         }
       ).addTo(mymap);
+
+      L.geoJson(pgCounty).addTo(mymap);
 
 
     </script>
