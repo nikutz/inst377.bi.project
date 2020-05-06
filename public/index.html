@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Methods - Post and Put Lab</title>
+    <title>INST377 Final Project</title>
     <link rel="stylesheet" type="text/css" href="styles.css" />
 
     <!-- We are going to need this later do pull out the slider inputs: https://api.jqueryui.com/slider/ -->
@@ -41,24 +41,28 @@
       " - $" + $( "#slider-range" ).slider( "values", 1 ) );
   } );
   </script>
-
   </head>
   <body>
-    <div class="wrapper">
-      <div class="container">
-        <div>
-          <h1 class="header">POST and PUT lab - with Fetch</h1>
-        </div>
+    <div class="header">
+      <h1>PG Opportunity Locator</h1>
+      <h2> Locator </h2>      
+      <h2> About </h2> 
+      <h2> Demo </h2> 
+  </div>
+
+  <div class="wrapper">
         <!--Radio Buttons:https://www.w3schools.com/tags/att_input_type_radio.asp-->
-        <!--How to do sliders : https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_rangeslider-->
+        <!--How to do sliders : https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_rangeslider-->     
         <div class="facetMenu"> 
           <form class="targetForm" id="labForm">
-            <p>Please select your buissness:</p>
-            <input type="radio" id="comercial" name="option" value="male">
-            <label for="comercial">Comercial</label><br>
-            <input type="radio" id="residential" name="option" value="female">
-            <label for="residential">Residential</label><br>
-            <input type="radio" id="both" name="option" value="other">
+
+            <label for="business">Please select your buissness:</label>
+
+            <select id="buesiness">
+              <option value="comercial">Comercial</option>
+              <option value="residential">Residential</option>
+              <option value="both">Both</option>
+            </select>
 
             <!--Drop down: https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select -->
             <label for="permit">Permit Type:</label>
@@ -70,6 +74,12 @@
               <option value="audi">Audi</option>
             </select>
 
+            <!-- https://css-tricks.com/html-for-zip-codes/ -->
+            <p>
+              <label for="zip">Zip Code:</label>
+              <input id="zip" name="zip" type="text" value="20783" inputmode="numeric" pattern="\d{5}">
+            </p>
+
             <p>
               <label for="year">Date Range:</label>
               <input type="text" id="year" readonly style="border:0; color:#f6931f; font-weight:bold;">
@@ -77,33 +87,17 @@
              
             <div id="year-slider-range"></div>
 
-            <!-- https://css-tricks.com/html-for-zip-codes/ -->
-            <p>
-            <label for="zip">Zip Code:</label>
-            <input id="zip" name="zip" type="text" value="20783" inputmode="numeric" pattern="\d{5}">
-          </p>
-
             <p>
                <label for="amount">Price range:</label>
                <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
             </p>
  
             <div id="slider-range"></div>
-
-            <label for="both">Both</label> 
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" />
-            <label for="interests">Interests</label>
-            <textarea id="interests" name="interests" rows="5" cols="33">
-                Default text says what?
-            </textarea
-            ><br />
             <button id="formBtn">Submit</button>
           </form>
           </div>
         </div>
-      </div>
-    </div>
+
 
     <script>
       function sendForm(e) {
