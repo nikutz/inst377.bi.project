@@ -13,17 +13,17 @@
     "express": "^4.17.1",
     "node-fetch": "^2.6.0",
     "sqlite": "^4.0.7",
-    "sqlite3": "^4.1.1",
+    "sqlite3": "^4.1.1"
+  },
+  "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/node": "^7.8.7",
     "@babel/preset-env": "^7.9.5",
-    "nodemon": "^2.0.3"
-  },
-  "devDependencies": {
     "eslint": "^6.5.1",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-html": "^6.0.0",
-    "eslint-plugin-import": "^2.18.2"
+    "eslint-plugin-import": "^2.18.2",
+    "nodemon": "^2.0.3"
   }
 }

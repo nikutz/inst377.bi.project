@@ -5,6 +5,5 @@
 
 Project focuses on an app designed to help users find favorable locations in Prince George's County to start a business.
 
-https://inst377-pg-bi.herokuapp.com/
 
 [User Manual](docs\user.md)
