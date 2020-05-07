@@ -25,14 +25,19 @@ app.use(express.static('public'));
 function processDataForFrontEnd(req, res) {
   const baseURL = 'https://data.princegeorgescountymd.gov/resource/weik-ttee.json'; // Enter the URL for the data you would like to retrieve here
 
+
+  console.log("REQUEST")
+  console.log(req.body)
+
+
   // Your Fetch API call starts here
   // Note that at no point do you "return" anything from this function -
   // it instead handles returning data to your front end at line 34.
   fetch(baseURL)
     .then((results) => results.json())
     .then((data) => { // this is an explicit return. If I want my information to go further, I'll need to use the "return" keyword before the brackets close
-      console.log(data);
-      console.log('Number of data points: $(data.length)');
+      //console.log(data);
+      //console.log('Number of data points: $(data.length)');
       // return data; // <- this will pass the data to the next "then" statement when I'm ready.
           
       const refined = data.map((m) => ({
@@ -59,7 +64,7 @@ function processDataForFrontEnd(req, res) {
       return c;
     }, {}))
     .then((data) => {
-      console.log(data);
+      //console.log(data);
       res.send({ data: data }); // here's where we return data to the front end
     })
     .catch((err) => {
@@ -69,8 +74,8 @@ function processDataForFrontEnd(req, res) {
 }
 
 // This is our first route on our server.
-// To access it, we can use a "GET" request on the front end
+// To access it, we can use a "POST" request on the front end
 // by typing in: localhost:3000/api or 127.0.0.1:3000/api
-app.get('/api', (req, res) => { processDataForFrontEnd(req, res); });
+app.post('/api', (req, res) => { processDataForFrontEnd(req, res); });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
