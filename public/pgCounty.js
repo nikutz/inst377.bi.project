@@ -1,19 +1,19 @@
-let pgCounty =
-{"type": "FeatureCollection",
-  "features": [
+const pgCounty =
+{'type': 'FeatureCollection',
+  'features': [
     {
-      "type": "Feature",
-      "properties": {
-        "state_fips": "24",
-        "name": "Prince George's",
-        "fips": "24033",
-        "objectid": "1208",
-        "state_name": "Maryland",
-        "cnty_fips": "033"
+      'type': 'Feature',
+      'properties': {
+        'state_fips': '24',
+        'name': "Prince George's",
+        'fips': '24033',
+        'objectid': '1208',
+        'state_name': 'Maryland',
+        'cnty_fips': '033'
       },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
+      'geometry': {
+        'type': 'MultiPolygon',
+        'coordinates': [
           [
             [
               [
