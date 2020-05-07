@@ -188,6 +188,17 @@
 
             console.log(document.getElementById("business").value);
         
+            let i = 0;
+            let xd = 0;
+            let yd = 0;
+            for(i=0;i< 20;i++){
+              xd = (.001 + Math.random()/20.0);
+              xy = (.001 + Math.random()/20.0);
+              let xx = 38.85261 + xd;
+              let yy =  -76.81389 + xy;
+              let marker = L.marker([xx,yy]).addTo(mymap);
+            }
+
             return filtered;
           });
       }
