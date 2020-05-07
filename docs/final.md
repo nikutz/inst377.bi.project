@@ -1,7 +1,7 @@
 # **College Park Business Search**
 
 ## Team Members
-* Punti Khiyara
+* Punit Khiyara
 * Henry Keegstra
 * Edward Kostreski
 * Ernie Park
