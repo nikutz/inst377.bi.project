@@ -2,16 +2,16 @@
 /* eslint-disable no-param-reassign */
 // These are our required libraries to make the server work.
 // We're including a server-side version of Fetch to build on your client-side work
-const express = require('express');
-const fetch = require('node-fetch');
 
-// Here we instantiate the server we're going to turn on
+import express from 'express';
+import fetch from 'node-fetch';
+const nodeGeocoder = require('node-geocoder');
+const mongoose = require('mongoose');
+const Post = require('./models/Post');
+require('dotenv/config');
+
+// Server Instantiation
 const app = express();
-
-
-// Servers are often subject to the whims of their environment.
-// Here, if our server has a PORT defined in its environment, it will use that.
-// Otherwise, it will default to port 3000
 const port = process.env.PORT || 3000;
 
 // Our server needs certain features - like the ability to send and read JSON
@@ -21,61 +21,137 @@ app.use(express.json());
 // And the ability to serve some files publicly, like our HTML.
 app.use(express.static('public'));
 
-
-function processDataForFrontEnd(req, res) {
-  const baseURL = 'https://data.princegeorgescountymd.gov/resource/weik-ttee.json'; // Enter the URL for the data you would like to retrieve here
+// Connecting to DB
 
 
-  console.log("REQUEST")
-  console.log(req.body)
+const options = {
+  provider: 'here',
+  apiKey: process.env.API_KEY
+};
+ 
+const geoCoder = nodeGeocoder(options);
 
+async function startUp() {
+  await mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, () => console.log('Connected to DB!'));
 
-  // Your Fetch API call starts here
-  // Note that at no point do you "return" anything from this function -
-  // it instead handles returning data to your front end at line 34.
-  fetch(baseURL)
+  await fetch('https://data.princegeorgescountymd.gov/resource/weik-ttee.json')
     .then((results) => results.json())
-    .then((data) => { // this is an explicit return. If I want my information to go further, I'll need to use the "return" keyword before the brackets close
-      //console.log(data);
-      //console.log('Number of data points: $(data.length)');
-      // return data; // <- this will pass the data to the next "then" statement when I'm ready.
-          
-      const refined = data.map((m) => ({
-        category: m.permit_category,
-        agency: m.county_agency,
-        id: m.permit_case_id,
-        year: m.permit_case_year,
-        type: m.permit_type,
-        name: m.case_name,
-        address: m.street_address,
-        city: m.city,
-        zip: m.zip_code,
-        date: m.permit_issuance_date,
-        cost: m.expected_construction_cost,
-        full_location: m.location
-      }));
+    .then((data) => {
+      const refined = [];
+      data.forEach((element) => {
+        if (element.permit_category === 'Building Permit') {
+          const obj = {
+            category: element.permit_category,
+            agency: element.county_agency,
+            id: element.permit_case_id,
+            year: element.permit_case_year,
+            type: element.permit_type,
+            name: element.case_name,
+            address: element.street_address,
+            city: element.city,
+            zip: element.zip_code,
+            date: element.permit_issuance_date,
+            cost: element.expected_construction_cost,
+            fullLocation: element.location
+          };
+          refined.push(obj);
+        }
+      });
+      console.log('Permit Records: ', refined.length);
       return refined;
     })
-    .then((data) => data.reduce((c, current) => {
-      if (!c[current.category]) {
-        c[current.category] = [];
-      }
-      c[current.category].push(current);
-      return c;
-    }, {}))
-    .then((data) => {
-      //console.log(data);
-      res.send({ data: data }); // here's where we return data to the front end
+    .then(async (data) => {
+      await data.forEach(async (element) => {
+        let latitude;
+        let longitude;
+        if (element.fullLocation) {
+          await geoCoder.geocode(element.fullLocation)
+            .then(async (res) => {
+              if (!res[0]) {
+                latitude = 'N/A';
+                longitude = 'N/A';
+              } else {
+                latitude = 'N/A';
+                longitude = 'N/A';
+                if (res[0]['county'] === "Prince George's") {
+                  latitude = res[0]['latitude'];
+                  longitude = res[0]['longitude'];
+                }
+              }
+            })
+            .catch((err) => {
+              if (err.code !== 'ECONNRESET' && err.code !== 'ENOTFOUND' && err.code !== 'ETIMEDOUT') {
+                console.log(err);
+              }
+            });
+        }
+        // Writing to DB
+        const post = new Post({
+          id: element.id,
+          category: element.category,
+          agency: element.agency,
+          year: element.year,
+          type: element.type,
+          name: element.name,
+          address: element.address,
+          city: element.city,
+          zip: element.zip,
+          date: element.date,
+          cost: element.cost,
+          fullLocation: element.fullLocation,
+          lat: latitude,
+          long: longitude
+        });
+        try {
+          const savedPost = await post.save();
+        } catch (err) {
+          if (err.code !== 11000) {
+            console.log(err);
+          }
+        }
+      });
     })
     .catch((err) => {
-      console.log(err);
-      res.redirect('/error');
+      console.log('Fetch Error');
     });
+}
+
+startUp();
+
+async function processDataForFrontEnd(req, res) {
+  // startUp();
+  // const lowerrange = req.body.year.slice(1, 5);
+  // const upperrange = req.body.year.slice(8, 12);
+  // const daterange = [lowerrange, upperrange];
+  // const lowercost = req.body.amount.split('-')[0].trim().slice(1);
+  // const uppercost = req.body.amount.split('-')[1].trim().slice(1);
+  // const pricerange = [lowercost, uppercost];
+  // const results = filterPermits(lowerrange, upperrange, lowercost, uppercost, dbSettings);
+  // console.log(results);
+  // async function findPermit(id, dbSettings) {
+  //   const db = await open(dbSettings);
+  //   const dat = await db.get('SELECT * FROM permits WHERE id = ?', [id], (err, row) => {
+  //     if (err) {
+  //       throw err;
+  //     }
+  //     return row;
+  //   });
+  // }
 }
 
 // This is our first route on our server.
 // To access it, we can use a "POST" request on the front end
 // by typing in: localhost:3000/api or 127.0.0.1:3000/api
-app.post('/api', (req, res) => { processDataForFrontEnd(req, res); });
+app
+  .route('/api')
+  .get(async (req, res) => {
+    try {
+      const posts = await Post.find();
+      res.json(posts);
+    } catch (err) {
+      console.log(err);
+    }
+  })
+  .post((req, res) => { processDataForFrontEnd(req, res); });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
