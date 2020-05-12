@@ -12,3 +12,7 @@ such as Chrome and Firefox for use in business settings. However,
 the site will also function adequately on most mobile browsers.
 
 [User Manual](docs\user.md)
+
+To set up the application, navigate to the main folder using the
+terminal/command prompt and install npm. Once that's done, run
+npm start and the website and server will be booted up.
