@@ -1,8 +1,8 @@
-/* eslint-disable dot-notation */
 /* eslint-disable linebreak-style */
 /* eslint-disable no-param-reassign */
 // These are our required libraries to make the server work.
 // We're including a server-side version of Fetch to build on your client-side work
+
 import express from 'express';
 import fetch from 'node-fetch';
 const nodeGeocoder = require('node-geocoder');
@@ -17,6 +17,8 @@ const port = process.env.PORT || 3000;
 // Our server needs certain features - like the ability to send and read JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+// And the ability to serve some files publicly, like our HTML.
 app.use(express.static('public'));
 
 // Connecting to DB
@@ -135,7 +137,6 @@ async function processDataForFrontEnd(req, res) {
   //     return row;
   //   });
   // }
-
 }
 
 // This is our first route on our server.

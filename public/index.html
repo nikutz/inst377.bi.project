@@ -15,7 +15,7 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
       $(function () {
-        $('#year-slider-range').slider({
+        $("#year-slider-range").slider({
           range: true,
           min: 2000,
           max: 2020,
@@ -72,7 +72,7 @@
   <body>
     <div class="header">
       <h1>PG Opportunity Locator</h1>
-      <a href="about.html" target="_blank">
+      <a href="about.html">
         <h2>About</h2>
       </a>
       <h2>Demo</h2>
@@ -147,37 +147,40 @@
     </div>
 
     <script>
+      //used as part of sendform to clear old markers
+      let markers = L.layerGroup([]);
       function sendForm(e) {
         e.preventDefault(); // this prevents your page reloading on button click
-        const target = document.querySelector('#labForm');
-        const btn = document.querySelector('#formBtn');
+        const target = document.querySelector("#labForm");
+        const btn = document.querySelector("#formBtn");
         const formToSend = new FormData(target);
 
 
-        // let formDataJSON = `{ ${expression} }`
+       // let formDataJSON = `{ ${expression} }`
 
 
-        console.log(formToSend);
-        fetch('/api', {
-          method: 'POST',
+        console.log(formToSend)
+        fetch("/api", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(Object.fromEntries(formToSend)),
+          //body: JSON.stringify(Object.fromEntries(formDataJSON)),
         })
           .then((permits) => permits.json())
-          // Only use building permits
+          //Only use building permits
           .then((permits) => {
-            return permits.data['Building Permit'];
+            return permits.data["Building Permit"];
           })
-          // Filter based on selections
+          //Filter based on selections
           .then((permits) => {
-            const filtered = permits.filter((m) => {
-              const business = document.getElementById('business').value;
-              // once we can get commercial/residential, do it here
-              // return m["type"] == document.getElementById("permit").value;
-              return m["zip"] == document.getElementById('zip').value;
-              // figure out how to get year/cost here
+            var filtered = permits.filter(function (m) {
+              var business = document.getElementById("business").value;
+              //once we can get commercial/residential, do it here
+              //return m["type"] == document.getElementById("permit").value;
+              return m["zip"] == document.getElementById("zip").value;
+              //figure out how to get year/cost here
             });
             console.log('filtered');
 
@@ -185,33 +188,37 @@
 
             console.log('--filtered--');
 
-            console.log(document.getElementById('business').value);
-        
+            console.log(document.getElementById("business").value);
+            
+
+            let i = 0;
+            let xd = 0;
+            let yd = 0;
+            markers.clearLayers();
+            let coords = [];
+            for(i=0;i< 20;i++){
+              xd = (.001 + Math.random()/20.0);
+              xy = (.001 + Math.random()/20.0);
+              let xx = 38.85261 + xd;
+              let yy =  -76.81389 + xy;
+              coords[i] = L.marker([xx,yy]);
+            }
+            markers = L.layerGroup(coords);
+            mymap.addLayer(markers);
             return filtered;
           });
       }
 
-      function viewData() {
-        const container = document.querySelector('.container');
-        const btn = document.querySelector('#getBtn');
-
-        fetch('/api')
-          .then((data) => data.json()) // note: we didn't send JSON, so there's no JSON to get.
-          .then((data) => {
-            console.log(data);
-          });
-      }
-
-      const formBtn = document.querySelector('#formBtn');
-      formBtn.addEventListener('click', sendForm);
-      formBtn.addEventListener('click', viewData);
+      const formBtn = document.querySelector("#formBtn");
+      formBtn.addEventListener("click", sendForm);
 
       /* This is Leaflet part of the script.  For not just trying to insert into the front page */
 
-      const mymap = L.map('mapid').setView([38.85261, -76.81389], 9.5);
+      const mymap = L.map("mapid").setView([38.85261, -76.81389], 9.5);
+      
 
       L.tileLayer(
-        'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibmlrdXR6IiwiYSI6ImNrOG03Y2ZnajBrNXczcm8yZmJvcmMwMXYifQ.f2mmuC6VX3-SR_TlifP6wQ',
+        "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibmlrdXR6IiwiYSI6ImNrOG03Y2ZnajBrNXczcm8yZmJvcmMwMXYifQ.f2mmuC6VX3-SR_TlifP6wQ",
         {
           maxZoom: 18,
           attribution:
