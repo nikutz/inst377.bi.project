@@ -72,7 +72,7 @@
   <body>
     <div class="header">
       <h1>PG Opportunity Locator</h1>
-      <a href="about.html" target="_blank">
+      <a href="about.html">
         <h2>About</h2>
       </a>
       <h2>Demo</h2>
@@ -147,6 +147,8 @@
     </div>
 
     <script>
+      //used as part of sendform to clear old markers
+      let markers = L.layerGroup([]);
       function sendForm(e) {
         e.preventDefault(); // this prevents your page reloading on button click
         const target = document.querySelector("#labForm");
@@ -187,18 +189,22 @@
             console.log('--filtered--');
 
             console.log(document.getElementById("business").value);
-        
+            
+
             let i = 0;
             let xd = 0;
             let yd = 0;
+            markers.clearLayers();
+            let coords = [];
             for(i=0;i< 20;i++){
               xd = (.001 + Math.random()/20.0);
               xy = (.001 + Math.random()/20.0);
               let xx = 38.85261 + xd;
               let yy =  -76.81389 + xy;
-              let marker = L.marker([xx,yy]).addTo(mymap);
+              coords[i] = L.marker([xx,yy]);
             }
-
+            markers = L.layerGroup(coords);
+            mymap.addLayer(markers);
             return filtered;
           });
       }
@@ -209,6 +215,7 @@
       /* This is Leaflet part of the script.  For not just trying to insert into the front page */
 
       const mymap = L.map("mapid").setView([38.85261, -76.81389], 9.5);
+      
 
       L.tileLayer(
         "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibmlrdXR6IiwiYSI6ImNrOG03Y2ZnajBrNXczcm8yZmJvcmMwMXYifQ.f2mmuC6VX3-SR_TlifP6wQ",
