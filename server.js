@@ -224,7 +224,7 @@ app
       res.json(codes);
     } catch (err) {
       console.log(err);
-    } 
+    }
   });
 
 app

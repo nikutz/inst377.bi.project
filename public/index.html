@@ -187,13 +187,12 @@
           body: JSON.stringify(Object.fromEntries(formToSend))
         })
           .then((permits) => permits.json())
-          // Only use building permits
           .then((data) => {
             data.forEach((element) => {
-              let marker = L.marker([element['lat'], element['long']]).addTo(mymap).bindPopup(element['cost'], {
-                minWidth: "150",
-                maxWidth: "400",
-                maxHeight: "150",
+              let marker = L.marker([element['lat'], element['long']]).addTo(mymap).bindPopup(element['fullLocation'], {
+                minWidth: '150',
+                maxWidth: '400',
+                maxHeight: '150',
               });
               mgroup.addLayer(marker);
             });
