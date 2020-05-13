@@ -16,3 +16,28 @@ the site will also function adequately on most mobile browsers.
 To set up the application, navigate to the main folder using the
 terminal/command prompt and install npm. Once that's done, run
 npm start and the website and server will be booted up.
+
+
+Developer Manual
+
+To get started install Node JS on your system
+Clone/Pull the project from github
+open your command line to the project folder location 
+run "npm install"
+follow the prompts to install npm
+run "npm start" which uses the server.js file as instructions for the webserver 
+Use a browser to navigate to the local address and port as indicated by ther npm terminal console
+If you can use the site locally you have set things up correctly.
+
+
+The main  client files are index.html ,demo.html , and about.html
+
+The main server side file is server.js
+
+The API endponts are 
+
+/api 
+
+which has different behavior based on wether it is a GET or POST request.
+
+
