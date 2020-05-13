@@ -64,3 +64,9 @@ amount: '$0 - $1000000'
 More Metadata e.g. the map pins should have hover over information.
 
 The startup and behavior of the processing it is doing more work than needed.
+
+
+
+#### Extra credit
+-We used a database MongoDB
+-We used JQuery to dynamically create slider controls instead of pure HTML
