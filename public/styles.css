@@ -153,3 +153,8 @@ a {
     border: 2px solid black;
     
 }
+
+video {
+  width: 600px;
+  height: 300px;
+}
