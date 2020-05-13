@@ -188,6 +188,7 @@
         })
           .then((permits) => permits.json())
           .then((data) => {
+            console.log(data);
             data.forEach((element) => {
               let marker = L.marker([element['lat'], element['long']]).addTo(mymap).bindPopup(element['fullLocation'], {
                 minWidth: '150',
@@ -196,6 +197,9 @@
               });
               mgroup.addLayer(marker);
             });
+          })
+          .catch((err) => {
+            console.log(err);
           });
       }
 
