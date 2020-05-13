@@ -17,9 +17,9 @@
       $(function () {
         $('#year-slider-range').slider({
           range: true,
-          min: 2000,
+          min: 2013,
           max: 2020,
-          values: [2000, 2020],
+          values: [2013, 2020],
           slide: function (event, ui) {
             $("#year").val("[" + ui.values[0] + " - " + ui.values[1] + "]");
           },
@@ -39,8 +39,8 @@
         $("#slider-range").slider({
           range: true,
           min: 0,
-          max: 500,
-          values: [75, 300],
+          max: 1000000,
+          values: [0, 1000000],
           slide: function (event, ui) {
             $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
           },
@@ -83,21 +83,15 @@
       <!--How to do sliders : https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_rangeslider-->
       <div class="facetMenu">
         <form method="post" class="targetForm" id="labForm">
-          <label for="business">Please select your business:</label>
-
-          <select id="business" name="business">
-            <option value="commercial">Commercial</option>
-            <option value="residential">Residential</option>
-            <option value="both">Both</option>
-          </select>
-
           <!--Drop down: https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select -->
           <label for="permit">Permit Type:</label>
 
           <select id="permit" name="permit">
             <option value="all-permits">All Permits</option>
-            <option value="a-Permits">A Permits</option>
-            <option value="b-Permits">B Permits</option>
+            <option value="r-Permits">Residential</option>
+            <option value="b-Permits">Business</option>
+            <option value="build-Permits">Building</option>
+            <option value="z-Permits">Zoning</option>
           </select>
 
           <!-- https://css-tricks.com/html-for-zip-codes/ -->
@@ -107,7 +101,7 @@
               id="zip"
               name="zip"
               type="text"
-              value="20783"
+              value=""
               inputmode="numeric"
               pattern="\d{5}"
             />
@@ -147,65 +141,6 @@
     </div>
 
     <script>
-      function sendForm(e) {
-        e.preventDefault(); // this prevents your page reloading on button click
-        const target = document.querySelector('#labForm');
-        const btn = document.querySelector('#formBtn');
-        const formToSend = new FormData(target);
-
-
-        // let formDataJSON = `{ ${expression} }`
-
-
-        console.log(formToSend);
-        fetch('/api', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(Object.fromEntries(formToSend)),
-        })
-          .then((permits) => permits.json())
-          // Only use building permits
-          .then((permits) => {
-            return permits.data['Building Permit'];
-          })
-          // Filter based on selections
-          .then((permits) => {
-            const filtered = permits.filter((m) => {
-              const business = document.getElementById('business').value;
-              // once we can get commercial/residential, do it here
-              // return m["type"] == document.getElementById("permit").value;
-              return m["zip"] == document.getElementById('zip').value;
-              // figure out how to get year/cost here
-            });
-            console.log('filtered');
-
-            console.log(filtered);
-
-            console.log('--filtered--');
-
-            console.log(document.getElementById('business').value);
-        
-            return filtered;
-          });
-      }
-
-      function viewData() {
-        const container = document.querySelector('.container');
-        const btn = document.querySelector('#getBtn');
-
-        fetch('/api')
-          .then((data) => data.json()) // note: we didn't send JSON, so there's no JSON to get.
-          .then((data) => {
-            console.log(data);
-          });
-      }
-
-      const formBtn = document.querySelector('#formBtn');
-      formBtn.addEventListener('click', sendForm);
-      formBtn.addEventListener('click', viewData);
-
       /* This is Leaflet part of the script.  For not just trying to insert into the front page */
 
       const mymap = L.map('mapid').setView([38.85261, -76.81389], 9.5);
@@ -225,6 +160,43 @@
       ).addTo(mymap);
 
       L.geoJson(pgCounty).addTo(mymap);
+      const mgroup = L.layerGroup([]).addTo(mymap);
+
+      function sendForm(e) {
+        mgroup.clearLayers();
+        e.preventDefault(); // this prevents your page reloading on button click
+        const target = document.querySelector('#labForm');
+        const btn = document.querySelector('#formBtn');
+        const formToSend = new FormData(target);
+
+
+        // let formDataJSON = `{ ${expression} }`
+
+
+        console.log(formToSend);
+        fetch('/api', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(Object.fromEntries(formToSend)),
+        })
+          .then((permits) => permits.json())
+          // Only use building permits
+          .then((data) => {
+            data.forEach((element) => {
+              let marker = L.marker([element['lat'], element['long']]).addTo(mymap).bindPopup(element['cost'], {
+                minWidth: "150",
+                maxWidth: "400",
+                maxHeight: "150",
+              });
+              mgroup.addLayer(marker);
+            });
+          });
+      }
+
+      const formBtn = document.querySelector('#formBtn');
+      formBtn.addEventListener('click', sendForm);
     </script>
   </body>
 </html>

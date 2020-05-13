@@ -31,7 +31,7 @@ const geoCoder = nodeGeocoder(options);
 
 async function startUp() {
   await mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, () => console.log('Connected to DB!'));
-
+  
   await fetch('https://data.princegeorgescountymd.gov/resource/weik-ttee.json')
     .then((results) => results.json())
     .then((data) => {
@@ -116,26 +116,67 @@ async function startUp() {
 
 startUp();
 
-async function processDataForFrontEnd(req, res) {
-  // startUp();
-  // const lowerrange = req.body.year.slice(1, 5);
-  // const upperrange = req.body.year.slice(8, 12);
-  // const daterange = [lowerrange, upperrange];
-  // const lowercost = req.body.amount.split('-')[0].trim().slice(1);
-  // const uppercost = req.body.amount.split('-')[1].trim().slice(1);
-  // const pricerange = [lowercost, uppercost];
-  // const results = filterPermits(lowerrange, upperrange, lowercost, uppercost, dbSettings);
-  // console.log(results);
-  // async function findPermit(id, dbSettings) {
-  //   const db = await open(dbSettings);
-  //   const dat = await db.get('SELECT * FROM permits WHERE id = ?', [id], (err, row) => {
-  //     if (err) {
-  //       throw err;
-  //     }
-  //     return row;
-  //   });
-  // }
 
+async function processDataForFrontEnd(req, res, data) {
+  const restosend = [];
+  const lowerrange = req.body.year.slice(1, 5);
+  const upperrange = req.body.year.slice(8, 12);
+  const lowercost = req.body.amount.split('-')[0].trim().slice(1);
+  const uppercost = req.body.amount.split('-')[1].trim().slice(1);
+  const zipcode = req.body.zip;
+  const permits = req.body.permit;
+  data.forEach((element) => {
+    if (element['lat'] !== 'N/A' && element['long'] !== 'N/A') {
+      if (element['year'] >= lowerrange && element['year'] <= upperrange && element['cost'] >= lowercost && element['cost'] <= uppercost) {
+        if (zipcode !== '') {
+          if (element['zip'] === zipcode) {
+            // eslint-disable-next-line no-lonely-if
+            if (permits === 'r-Permits') {
+              if (element['type'] === 'R' || element['type'] === 'RG' || element['type'] === 'RGU' || element['type'] === 'RGU (RESIDENTIAL ADDITION/GRADING/USE)' || element['type'] === 'SGU' || element['type'] === 'SGU - (New Single Family)') {
+                restosend.push(element);
+              }
+            } else if (permits === 'b-Permits') {
+              if (element['type'] === 'UO' || element['type'] === 'UO (USE & OCCUPANCY)') {
+                restosend.push(element);
+              }
+            } else if (permits === 'build-Permits') {
+              if (element['type'] === 'UTB' || element['type'] === 'UTB (USE & OCCUPANCY-BUILDING)') {
+                restosend.push(element);
+              }
+            } else if (permits === 'z-Permits') {
+              if (element['type'] === 'UTZ' || element['type'] === 'UTZ (USE & OCCUPANCY-ZONING)') {
+                restosend.push(element);
+              }
+            } else {
+              restosend.push(element);
+            }
+          }
+        } else {
+          // eslint-disable-next-line no-lonely-if
+          if (permits === 'r-Permits') {
+            if (element['type'] === 'R' || element['type'] === 'RG' || element['type'] === 'RGU' || element['type'] === 'RGU (RESIDENTIAL ADDITION/GRADING/USE)' || element['type'] === 'SGU' || element['type'] === 'SGU - (New Single Family)') {
+              restosend.push(element);
+            }
+          } else if (permits === 'b-Permits') {
+            if (element['type'] === 'UO' || element['type'] === 'UO (USE & OCCUPANCY)') {
+              restosend.push(element);
+            }
+          } else if (permits === 'build-Permits') {
+            if (element['type'] === 'UTB' || element['type'] === 'UTB (USE & OCCUPANCY-BUILDING)') {
+              restosend.push(element);
+            }
+          } else if (permits === 'z-Permits') {
+            if (element['type'] === 'UTZ' || element['type'] === 'UTZ (USE & OCCUPANCY-ZONING)') {
+              restosend.push(element);
+            }
+          } else {
+            restosend.push(element);
+          }
+        }
+      }
+    }
+  });
+  res.json(restosend);
 }
 
 // This is our first route on our server.
@@ -151,6 +192,54 @@ app
       console.log(err);
     }
   })
-  .post((req, res) => { processDataForFrontEnd(req, res); });
+  .post(async(req, res) => { 
+    try {
+      const posts = await Post.find();
+      await processDataForFrontEnd(req, res, posts);
+      console.log(req.body);
+    } catch (err) {
+      console.log(err);
+    } 
+  })
+  .put(async(req, res) => { 
+    try {
+      const posts = await Post.find();
+      await processDataForFrontEnd(req, res, posts);
+    } catch (err) {
+      console.log(err);
+    } 
+  });
+
+app
+  .route('/geo')
+  .get(async (req, res) => {
+    try {
+      const posts = await Post.find();
+      const codes = []
+      posts.forEach((element)=>{
+        const code = {'name':element['name'], 'lat': element['lat'], 'long': element['long']};
+        codes.push(code);
+      });
+      res.json(codes);
+    } catch (err) {
+      console.log(err);
+    } 
+  });
+
+app
+  .route('/address')
+  .get(async (req, res) => {
+    try {
+      const posts = await Post.find();
+      const codes = []
+      posts.forEach((element)=>{
+        const code = {'name':element['name'], 'address': element['fullLocation']};
+        codes.push(code);
+      });
+      res.json(codes);
+    } catch (err) {
+      console.log(err);
+    }
+  });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
