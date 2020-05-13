@@ -8,7 +8,6 @@ import fetch from 'node-fetch';
 const nodeGeocoder = require('node-geocoder');
 const mongoose = require('mongoose');
 const Post = require('./server_files/Post');
-require('dotenv/config');
 
 // Server Instantiation
 const app = express();
@@ -23,16 +22,17 @@ app.use(express.static('public'));
 
 // Connecting to DB
 
+const secrets = {'API_Key': 'icv8-oVDQisoOF-5Cl48DSs8fu7Y7zqdkvKT-w_NvKs','DBKey':'mongodb+srv://broyouknowme:likeactuallytho@rest-0bi1a.mongodb.net/test?retryWrites=true&w=majority'};
 
 const options = {
   provider: 'here',
-  apiKey: process.env.API_KEY
+  apiKey: secrets.API_Key
 };
- 
+
 const geoCoder = nodeGeocoder(options);
 
 async function startUp() {
-  await mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, () => console.log('Connected to DB!'));
+  await mongoose.connect(secrets.DBKey, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, () => console.log('Connected to DB!'));
   
   await fetch('https://data.princegeorgescountymd.gov/resource/weik-ttee.json')
     .then((results) => results.json())
