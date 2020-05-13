@@ -41,3 +41,17 @@ The API endponts are
 which has different behavior based on wether it is a GET or POST request.
 
 
+To create a filtered data with a POST request
+
+Follow the standard stringification of the form fields or 
+
+make the POST request body in this format
+
+no zip code means all zip code
+
+{
+permit: 'b-Permits',
+zip: '',
+year: '[2013 - 2020]',
+amount: '$0 - $1000000'
+}
