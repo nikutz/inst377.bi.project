@@ -14,42 +14,48 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
+      // eslint-disable-next-line prefer-arrow-callback
       $(function () {
-        $("#year-slider-range").slider({
+        $('#year-slider-range').slider({
           range: true,
           min: 2013,
           max: 2020,
           values: [2013, 2020],
           slide: function (event, ui) {
-            $("#year").val("[" + ui.values[0] + " - " + ui.values[1] + "]");
+            // eslint-disable-next-line prefer-template
+            $('#year').val('[' + ui.values[0] + ' - ' + ui.values[1] + ']');
           },
         });
-        $("#year").val(
-          "[" +
-            $("#year-slider-range").slider("values", 0) +
-            " - " +
-            $("#year-slider-range").slider("values", 1) +
-            "]"
+        $('#year').val(
+          // eslint-disable-next-line prefer-template
+          '[' +
+            $('#year-slider-range').slider('values', 0) +
+            ' - ' +
+            $('#year-slider-range').slider('values', 1) +
+            ']'
         );
       });
     </script>
 
     <script>
+      // eslint-disable-next-line prefer-arrow-callback
       $(function () {
-        $("#slider-range").slider({
+        $('#slider-range').slider({
           range: true,
           min: 0,
           max: 1000000,
           values: [0, 1000000],
           slide: function (event, ui) {
-            $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+            // eslint-disable-next-line prefer-template
+            $('#amount').val('$' + ui.values[0] + ' - $' + ui.values[1]);
           },
         });
-        $("#amount").val(
-          "$" +
-            $("#slider-range").slider("values", 0) +
-            " - $" +
-            $("#slider-range").slider("values", 1)
+        $('#amount').val(
+          // eslint-disable-next-line prefer-template
+          '$' +
+            $('#slider-range').slider('values', 0) +
+            ' - $' +
+            $('#slider-range').slider('values', 1)
         );
       });
     </script>
@@ -153,7 +159,7 @@
             'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
             '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
             'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-          id: "mapbox/streets-v11",
+          id: 'mapbox/streets-v11',
           tileSize: 512,
           zoomOffset: -1,
         }
@@ -165,22 +171,19 @@
       function sendForm(e) {
         mgroup.clearLayers();
         e.preventDefault(); // this prevents your page reloading on button click
-        const target = document.querySelector("#labForm");
-        const btn = document.querySelector("#formBtn");
+        const target = document.querySelector('#labForm');
+        const btn = document.querySelector('#formBtn');
         const formToSend = new FormData(target);
 
 
        // let formDataJSON = `{ ${expression} }`
 
-
-        console.log(formToSend)
         fetch('/api', {
           method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(Object.fromEntries(formToSend)),
-          //body: JSON.stringify(Object.fromEntries(formDataJSON)),
+          body: JSON.stringify(Object.fromEntries(formToSend))
         })
           .then((permits) => permits.json())
           // Only use building permits
