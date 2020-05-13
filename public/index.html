@@ -15,7 +15,7 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
       $(function () {
-        $('#year-slider-range').slider({
+        $("#year-slider-range").slider({
           range: true,
           min: 2013,
           max: 2020,
@@ -72,7 +72,7 @@
   <body>
     <div class="header">
       <h1>PG Opportunity Locator</h1>
-      <a href="about.html" target="_blank">
+      <a href="about.html">
         <h2>About</h2>
       </a>
       <h2>Demo</h2>
@@ -165,21 +165,22 @@
       function sendForm(e) {
         mgroup.clearLayers();
         e.preventDefault(); // this prevents your page reloading on button click
-        const target = document.querySelector('#labForm');
-        const btn = document.querySelector('#formBtn');
+        const target = document.querySelector("#labForm");
+        const btn = document.querySelector("#formBtn");
         const formToSend = new FormData(target);
 
 
-        // let formDataJSON = `{ ${expression} }`
+       // let formDataJSON = `{ ${expression} }`
 
 
-        console.log(formToSend);
+        console.log(formToSend)
         fetch('/api', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(Object.fromEntries(formToSend)),
+          //body: JSON.stringify(Object.fromEntries(formDataJSON)),
         })
           .then((permits) => permits.json())
           // Only use building permits
