@@ -18,7 +18,7 @@ terminal/command prompt and install npm. Once that's done, run
 npm start and the website and server will be booted up.
 
 
-Developer Manual
+### Developer Manual
 
 To get started install Node JS on your system
 Clone/Pull the project from github
@@ -55,3 +55,12 @@ zip: '',
 year: '[2013 - 2020]',
 amount: '$0 - $1000000'
 }
+
+
+
+
+### Future Improvements 
+
+More Metadata e.g. the map pins should have hover over information.
+
+The startup and behavior of the processing it is doing more work than needed.
