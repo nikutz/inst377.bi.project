@@ -119,15 +119,15 @@ async function startUp() {
 startUp();
 
 
-async function processDataForFrontEnd(req, res, data) {
+function processDataForFrontEnd(filter, posts) {
   const restosend = [];
-  const lowerrange = req.body.year.slice(1, 5);
-  const upperrange = req.body.year.slice(8, 12);
-  const lowercost = req.body.amount.split('-')[0].trim().slice(1);
-  const uppercost = req.body.amount.split('-')[1].trim().slice(1);
-  const zipcode = req.body.zip;
-  const permits = req.body.permit;
-  data.forEach((element) => {
+  const lowerrange = filter.year.slice(1, 5);
+  const upperrange = filter.year.slice(8, 12);
+  const lowercost = filter.amount.split('-')[0].trim().slice(1);
+  const uppercost = filter.amount.split('-')[1].trim().slice(1);
+  const zipcode = filter.zip;
+  const permits = filter.permit;
+  posts.forEach((element) => {
     if (element['lat'] !== 'N/A' && element['long'] !== 'N/A') {
       if (element['year'] >= lowerrange && element['year'] <= upperrange && element['cost'] >= lowercost && element['cost'] <= uppercost) {
         if (zipcode !== '') {
@@ -178,7 +178,7 @@ async function processDataForFrontEnd(req, res, data) {
       }
     }
   });
-  res.json(restosend);
+  return restosend;
 }
 
 // This is our first route on our server.
@@ -197,7 +197,8 @@ app
   .post(async(req, res) => { 
     try {
       const posts = await Post.find();
-      await processDataForFrontEnd(req, res, posts);
+      const datatosend = processDataForFrontEnd(req.body, posts);
+      res.json({restosend : datatosend});
     } catch (err) {
       console.log(err);
     } 
