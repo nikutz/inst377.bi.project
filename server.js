@@ -198,7 +198,6 @@ app
     try {
       const posts = await Post.find();
       await processDataForFrontEnd(req, res, posts);
-      console.log(req.body);
     } catch (err) {
       console.log(err);
     } 
