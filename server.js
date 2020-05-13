@@ -7,7 +7,7 @@ import express from 'express';
 import fetch from 'node-fetch';
 const nodeGeocoder = require('node-geocoder');
 const mongoose = require('mongoose');
-const Post = require('./models/Post');
+const Post = require('./server_files/Post');
 require('dotenv/config');
 
 // Server Instantiation
