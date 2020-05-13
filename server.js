@@ -217,8 +217,8 @@ app
   .get(async (req, res) => {
     try {
       const posts = await Post.find();
-      const codes = []
-      posts.forEach((element)=>{
+      const codes = [];
+      posts.forEach((element) => {
         const code = {'name':element['name'], 'lat': element['lat'], 'long': element['long']};
         codes.push(code);
       });
