@@ -8,6 +8,7 @@ import fetch from 'node-fetch';
 const nodeGeocoder = require('node-geocoder');
 const mongoose = require('mongoose');
 const Post = require('./models/Post');
+
 require('dotenv/config');
 
 // Server Instantiation
@@ -118,25 +119,56 @@ async function startUp() {
 
 startUp();
 
+async function filterPermits(lowerrange, upperrange, lowercost, uppercost, dbSettings){
+  const db = await open(dbSettings);
+  const dat = await db.get('SELECT * FROM permits',[], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    return row;
+  });
+}
+
+
 async function processDataForFrontEnd(req, res) {
-  // startUp();
-  // const lowerrange = req.body.year.slice(1, 5);
-  // const upperrange = req.body.year.slice(8, 12);
-  // const daterange = [lowerrange, upperrange];
-  // const lowercost = req.body.amount.split('-')[0].trim().slice(1);
-  // const uppercost = req.body.amount.split('-')[1].trim().slice(1);
-  // const pricerange = [lowercost, uppercost];
-  // const results = filterPermits(lowerrange, upperrange, lowercost, uppercost, dbSettings);
-  // console.log(results);
-  // async function findPermit(id, dbSettings) {
-  //   const db = await open(dbSettings);
-  //   const dat = await db.get('SELECT * FROM permits WHERE id = ?', [id], (err, row) => {
-  //     if (err) {
-  //       throw err;
-  //     }
-  //     return row;
-  //   });
-  // }
+  startUp(); //startup each time?
+ 
+
+  const lowerrange = req.body.year.slice(1, 5);
+  const upperrange = req.body.year.slice(8, 12);
+  const daterange = [lowerrange, upperrange];
+  const lowercost = req.body.amount.split('-')[0].trim().slice(1);
+  const uppercost = req.body.amount.split('-')[1].trim().slice(1);
+  const pricerange = [lowercost, uppercost];
+
+  console.log('\n');
+  console.log('-Form Data From Client!-----------------------------------------\n');
+  console.log(`lowerrange is ${lowerrange}\n`);
+  console.log(`upperrange  is ${upperrange}\n`);
+  console.log(`daterange is ${daterange}\n`);
+  console.log(`lowercost is ${lowercost}\n`);
+  console.log(`uppercost is ${uppercost}\n`);
+  console.log(`pricerange is ${pricerange}\n`);
+  console.log('----------------------------------------------------------------\n');
+  console.log('\n');
+
+  const results = filterPermits(lowerrange, upperrange, lowercost, uppercost, dbSettings);
+  
+  console.log('\n');
+  console.log('-Filtered Results !-----------------------------------------\n');
+  console.log(results);
+  console.log('----------------------------------------------------------------\n');
+  console.log('\n');
+
+  async function findPermit(id, dbSettings) {
+    const db = await open(dbSettings);
+    const dat = await db.get('SELECT * FROM permits WHERE id = ?', [id], (err, row) => {
+      if (err) {
+        throw err;
+      }
+      return row;
+    });
+  }
 }
 
 // This is our first route on our server.
