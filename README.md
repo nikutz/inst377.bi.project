@@ -45,6 +45,8 @@ To create a filtered data with a POST request
 
 Follow the standard stringification of the form fields or 
 
+PUT WORKS THE same as POST
+
 make the POST request body in this format
 
 no zip code means all zip code
@@ -56,8 +58,13 @@ year: '[2013 - 2020]',
 amount: '$0 - $1000000'
 }
 
+GET request gets everything
 
 
+/geo api route
+
+
+GET request gives you  the Geo locations.
 
 ### Future Improvements 
 
