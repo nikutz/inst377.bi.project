@@ -22,7 +22,7 @@ app.use(express.static('public'));
 
 // Connecting to DB
 
-const secrets = {'API_Key': 'icv8-oVDQisoOF-5Cl48DSs8fu7Y7zqdkvKT-w_NvKs','DBKey':'mongodb://broyouknowme:likeactuallytho@rest-0bi1a.mongodb.net/test?retryWrites=true&w=majority'};
+const secrets = {'API_Key': 'icv8-oVDQisoOF-5Cl48DSs8fu7Y7zqdkvKT-w_NvKs','DBKey':'mongodb+srv://broyouknowme:likeactuallytho@rest-0bi1a.mongodb.net/test?retryWrites=true&w=majority'};
 
 const options = {
   provider: 'here',
@@ -119,15 +119,15 @@ async function startUp() {
 startUp();
 
 
-function processDataForFrontEnd(filter, posts) {
+function processDataForFrontEnd(req, res, data) {
   const restosend = [];
-  const lowerrange = filter.year.slice(1, 5);
-  const upperrange = filter.year.slice(8, 12);
-  const lowercost = filter.amount.split('-')[0].trim().slice(1);
-  const uppercost = filter.amount.split('-')[1].trim().slice(1);
-  const zipcode = filter.zip;
-  const permits = filter.permit;
-  posts.forEach((element) => {
+  const lowerrange = req.body.year.slice(1, 5);
+  const upperrange = req.body.year.slice(8, 12);
+  const lowercost = req.body.amount.split('-')[0].trim().slice(1);
+  const uppercost = req.body.amount.split('-')[1].trim().slice(1);
+  const zipcode = req.body.zip;
+  const permits = req.body.permit;
+  data.forEach((element) => {
     if (element['lat'] !== 'N/A' && element['long'] !== 'N/A') {
       if (element['year'] >= lowerrange && element['year'] <= upperrange && element['cost'] >= lowercost && element['cost'] <= uppercost) {
         if (zipcode !== '') {
@@ -178,7 +178,7 @@ function processDataForFrontEnd(filter, posts) {
       }
     }
   });
-  return restosend;
+  res.json(restosend);
 }
 
 // This is our first route on our server.
@@ -197,8 +197,7 @@ app
   .post(async(req, res) => { 
     try {
       const posts = await Post.find();
-      const datatosend = processDataForFrontEnd(req.body, posts);
-      res.json({restosend : datatosend});
+      await processDataForFrontEnd(req, res, posts);
     } catch (err) {
       console.log(err);
     } 
