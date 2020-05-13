@@ -22,7 +22,7 @@ app.use(express.static('public'));
 
 // Connecting to DB
 
-const secrets = {'API_Key': 'icv8-oVDQisoOF-5Cl48DSs8fu7Y7zqdkvKT-w_NvKs','DBKey':'mongodb+srv://broyouknowme:likeactuallytho@rest-0bi1a.mongodb.net/test?retryWrites=true&w=majority'};
+const secrets = {'API_Key': 'icv8-oVDQisoOF-5Cl48DSs8fu7Y7zqdkvKT-w_NvKs','DBKey':'mongodb://broyouknowme:likeactuallytho@rest-0bi1a.mongodb.net/test?retryWrites=true&w=majority'};
 
 const options = {
   provider: 'here',
