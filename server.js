@@ -13,6 +13,11 @@ const Post = require('./server_files/Post');
 const app = express();
 const port = process.env.PORT || 3000;
 
+//Database Event Logging
+mongoose.connection.on('connected', function(){console.log("----Mongoose Connected!----\n")});
+mongoose.connection.on('error', function(){console.log("----Mongoose Error!----\n")});
+mongoose.connection.on('disconnected', function(){console.log("----Mongoose Disconnected!----\n")});
+
 // Our server needs certain features - like the ability to send and read JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -29,11 +34,17 @@ const options = {
   apiKey: secrets.API_Key
 };
 
-const geoCoder = nodeGeocoder(options);
+const geoCoder = nodeGeocoder(options,);
 
 async function startUp() {
+
+  console.log("Connecting Mongoose ....\n")
+
+
   await mongoose.connect(secrets.DBKey, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, () => console.log('Connected to DB!'));
   
+  
+  console.log("Fetching PG DATA ....\n")
   await fetch('https://data.princegeorgescountymd.gov/resource/weik-ttee.json')
     .then((results) => results.json())
     .then((data) => {
@@ -54,6 +65,8 @@ async function startUp() {
             cost: element.expected_construction_cost,
             fullLocation: element.location
           };
+          console.log(obj + "\n");
+
           refined.push(obj);
         }
       });
