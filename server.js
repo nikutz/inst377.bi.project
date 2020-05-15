@@ -37,7 +37,7 @@ const geoCoder = nodeGeocoder(options);
 
 async function startUp() {
   // eslint-disable-next-line prefer-template
-  await fetch('https://data.princegeorgescountymd.gov/resource/weik-ttee.json?$$app_token='+secrets.PGKey+'&$limit=10000')
+  await fetch('https://data.princegeorgescountymd.gov/resource/weik-ttee.json?')
     .then((results) => results.json())
     .then((data) => {
       const refined = [];
