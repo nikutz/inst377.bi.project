@@ -6,8 +6,7 @@
 import express from 'express';
 import fetch from 'node-fetch';
 const nodeGeocoder = require('node-geocoder');
-const mongoose = require('mongoose');
-const Post = require('./server_files/Post');
+const NEDB = require('nedb');
 
 // Server Instantiation
 const app = express();
@@ -21,8 +20,13 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // Connecting to DB
+const database = new NEDB({ filename: './server_files/database.db', autoload: true });
+database.ensureIndex({ fieldName: 'id', unique: true }, (err) => {});
 
-const secrets = {'API_Key': 'icv8-oVDQisoOF-5Cl48DSs8fu7Y7zqdkvKT-w_NvKs','DBKey':'mongodb+srv://broyouknowme:likeactuallytho@rest-0bi1a.mongodb.net/test?retryWrites=true&w=majority'};
+const secrets = {
+  'API_Key': 'icv8-oVDQisoOF-5Cl48DSs8fu7Y7zqdkvKT-w_NvKs',
+  'PGKey': 'uW9whbab4HdcdODVawqrtSejv'
+};
 
 const options = {
   provider: 'here',
@@ -32,9 +36,8 @@ const options = {
 const geoCoder = nodeGeocoder(options);
 
 async function startUp() {
-  await mongoose.connect(secrets.DBKey, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, () => console.log('Connected to DB!'));
-  
-  await fetch('https://data.princegeorgescountymd.gov/resource/weik-ttee.json')
+  // eslint-disable-next-line prefer-template
+  await fetch('https://data.princegeorgescountymd.gov/resource/weik-ttee.json?$$app_token='+secrets.PGKey+'&$limit=10000')
     .then((results) => results.json())
     .then((data) => {
       const refined = [];
@@ -86,7 +89,7 @@ async function startUp() {
             });
         }
         // Writing to DB
-        const post = new Post({
+        await database.insert({
           id: element.id,
           category: element.category,
           agency: element.agency,
@@ -102,17 +105,11 @@ async function startUp() {
           lat: latitude,
           long: longitude
         });
-        try {
-          const savedPost = await post.save();
-        } catch (err) {
-          if (err.code !== 11000) {
-            console.log(err);
-          }
-        }
       });
     })
     .catch((err) => {
       console.log('Fetch Error');
+      console.log(err);
     });
 }
 
@@ -186,61 +183,56 @@ function processDataForFrontEnd(req, res, data) {
 // by typing in: localhost:3000/api or 127.0.0.1:3000/api
 app
   .route('/api')
-  .get(async (req, res) => {
-    try {
-      const posts = await Post.find();
-      res.json(posts);
-    } catch (err) {
-      console.log(err);
-    }
+  .get((req, res) => {
+    database.find({}, (err, data) => {
+      if (!err) {
+        res.json(data);
+      }
+    });
   })
-  .post(async(req, res) => { 
-    try {
-      const posts = await Post.find();
-      await processDataForFrontEnd(req, res, posts);
-    } catch (err) {
-      console.log(err);
-    } 
+  .post((req, res) => {
+    database.find({}, async (err, data) => {
+      if (!err) {
+        await processDataForFrontEnd(req, res, data);
+      }
+    });
   })
-  .put(async(req, res) => { 
-    try {
-      const posts = await Post.find();
-      await processDataForFrontEnd(req, res, posts);
-    } catch (err) {
-      console.log(err);
-    } 
+  .put((req, res) => { 
+    database.find({}, (err, data) => {
+      if (!err) {
+        processDataForFrontEnd(req, res, data);
+      }
+    });
   });
 
 app
   .route('/geo')
-  .get(async (req, res) => {
-    try {
-      const posts = await Post.find();
-      const codes = [];
-      posts.forEach((element) => {
-        const code = {'name':element['name'], 'lat': element['lat'], 'long': element['long']};
-        codes.push(code);
-      });
-      res.json(codes);
-    } catch (err) {
-      console.log(err);
-    }
+  .get((req, res) => {
+    database.find({}, (err, data) => {
+      if (!err) {
+        const codes = [];
+        data.forEach((element) => {
+          const code = { 'name':element[ 'name'], 'lat': element['lat'], 'long': element['long'] };
+          codes.push(code);
+        });
+        res.json(codes);
+      }
+    });
   });
 
 app
   .route('/address')
-  .get(async (req, res) => {
-    try {
-      const posts = await Post.find();
-      const codes = []
-      posts.forEach((element)=>{
-        const code = {'name':element['name'], 'address': element['fullLocation']};
-        codes.push(code);
-      });
-      res.json(codes);
-    } catch (err) {
-      console.log(err);
-    }
+  .get((req, res) => {
+    database.find({}, (err, data) => {
+      if (!err) {
+        const codes = [];
+        data.forEach((element) => {
+          const code = { 'name': element['name'], 'address': element['fullLocation'] };
+          codes.push(code);
+        });
+        res.json(codes);
+      }
+    });
   });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

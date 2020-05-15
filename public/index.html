@@ -182,7 +182,7 @@
         fetch('/api', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify(Object.fromEntries(formToSend))
         })
@@ -190,12 +190,16 @@
           .then((data) => {
             console.log(data);
             data.forEach((element) => {
-              let marker = L.marker([element['lat'], element['long']]).addTo(mymap).bindPopup(element['fullLocation'], {
-                minWidth: '150',
-                maxWidth: '400',
-                maxHeight: '150',
-              });
-              mgroup.addLayer(marker);
+              try {
+                let marker = L.marker([element['lat'], element['long']]).addTo(mymap).bindPopup(element['fullLocation'], {
+                  minWidth: '150',
+                  maxWidth: '400',
+                  maxHeight: '150',
+                });
+                mgroup.addLayer(marker);
+              } catch (err) {
+                return err;
+              }
             });
           })
           .catch((err) => {
