@@ -13,50 +13,70 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-      // eslint-disable-next-line prefer-arrow-callback
-      $(function () {
-        $('#year-slider-range').slider({
-          range: true,
-          min: 2013,
-          max: 2020,
-          values: [2013, 2020],
-          slide: function (event, ui) {
-            // eslint-disable-next-line prefer-template
-            $('#year').val('[' + ui.values[0] + ' - ' + ui.values[1] + ']');
-          },
-        });
-        $('#year').val(
-          // eslint-disable-next-line prefer-template
-          '[' +
-            $('#year-slider-range').slider('values', 0) +
-            ' - ' +
-            $('#year-slider-range').slider('values', 1) +
-            ']'
-        );
-      });
-    </script>
+      let upperdate = 2014;
+      let lowerdate = 2013;
+      let upperprice = 0;
+      let lowerprice = 0;
+      fetch('/api')
+        .then((data) => data.json())
+        .then(async (data) => {
+          await data.forEach((e) => {
+            if (e['year'] > upperdate) {
+              upperdate = e['year'];
+            }
+            if (e['year'] < lowerdate) {
+              lowerdate = e['year'];
+            }
+            if (e['cost'] > upperprice) {
+              upperprice = e['cost'];
+            }
+            if (e['cost'] < lowerprice) {
+              lowerprice = e['cost'];
+            }
+          });
+          // eslint-disable-next-line prefer-arrow-callback
+          $(function () {
+            $('#year-slider-range').slider({
+              range: true,
+              min: 2006,
+              max: 2020,
+              values: [lowerdate, upperdate],
+              slide: function (event, ui) {
+                // eslint-disable-next-line prefer-template
+                $('#year').val('[' + ui.values[0] + ' - ' + ui.values[1] + ']');
+              },
+            });
+            $('#year').val(
+              // eslint-disable-next-line prefer-template
+              '[' +
+                $('#year-slider-range').slider('values', 0) +
+                ' - ' +
+                $('#year-slider-range').slider('values', 1) +
+                ']'
+            );
+          });
 
-    <script>
-      // eslint-disable-next-line prefer-arrow-callback
-      $(function () {
-        $('#slider-range').slider({
-          range: true,
-          min: 0,
-          max: 1000000,
-          values: [0, 1000000],
-          slide: function (event, ui) {
-            // eslint-disable-next-line prefer-template
-            $('#amount').val('$' + ui.values[0] + ' - $' + ui.values[1]);
-          },
+          // eslint-disable-next-line prefer-arrow-callback
+          $(function () {
+            $('#slider-range').slider({
+              range: true,
+              min: lowerprice,
+              max: upperprice,
+              values: [lowerprice, upperprice],
+              slide: function (event, ui) {
+                // eslint-disable-next-line prefer-template
+                $('#amount').val('$' + ui.values[0] + ' - $' + ui.values[1]);
+              },
+            });
+            $('#amount').val(
+              // eslint-disable-next-line prefer-template
+              '$' +
+                $('#slider-range').slider('values', 0) +
+                ' - $' +
+                $('#slider-range').slider('values', 1)
+            );
+          });
         });
-        $('#amount').val(
-          // eslint-disable-next-line prefer-template
-          '$' +
-            $('#slider-range').slider('values', 0) +
-            ' - $' +
-            $('#slider-range').slider('values', 1)
-        );
-      });
     </script>
 
     <!-- This is leaflet links/scripts to get it working  -->
